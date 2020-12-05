@@ -1,7 +1,7 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 //TODO: Include the ball_chaser "DriveToTarget" header file
-#include "/home/workspace/catkin_ws/src/ball_chaser/srv/DriveToTarget.h"
+#include "ball_chaser/DriveToTarget.h"
 
 // ROS::Publisher motor commands;
 ros::Publisher motor_command_publisher;
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     motor_command_publisher = n.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
 
     // TODO: Define a drive /ball_chaser/command_robot service with a handle_drive_request callback function
-    ros::ServiceServer service = n.advertiseService("/home/workspace/catkin_ws/src/ball_chaser", handle_drive_request);
+    ros::ServiceServer service = n.advertiseService("/ball_chaser/command_robot", handle_drive_request);
     ROS_INFO("Ready to send motor commands");
 
     // TODO: Delete the loop, move the code to the inside of the callback function and make the necessary changes to publish the requested velocities instead of constant values
