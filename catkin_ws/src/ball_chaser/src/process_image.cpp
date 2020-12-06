@@ -5,6 +5,8 @@
 #include <opencv2/imgproc/imgproc.hpp> //TODO correct includes
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
+// Debugging
+#include <ros/console.h>
 
 #define CV_BGR2GRAY 6
 #define CV_HOUGH_GRADIENT 3
@@ -39,7 +41,7 @@ void process_image_callback(const sensor_msgs::Image img)
     // Smooth to avoid false detection
     GaussianBlur(gray, gray, Size(9, 9), 2, 2);
     std::vector<Vec3f> circles;
-    HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 2, img.height/4, 200, 100);
+    HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 2, gray.rows/4, 200, 100);
 
     if(circles.size() == 0)
     {
@@ -52,18 +54,22 @@ void process_image_callback(const sensor_msgs::Image img)
 
         float linear_x = 0.0f;
         float angular_z = 0.0f;
-        const int min = (img.step+1) / 4;
-        const int max = img.step - min; 
+        const int min = gray.cols / 3;
+        const int max = gray.cols - min;
+
+        ROS_INFO("min: %i", min);
+        ROS_INFO("max: %i", max);
+        ROS_INFO("y  : %f", y);
 
         if(y < min)
-           angular_z = 0.1f;
+           angular_z = 0.5f;
         else if (y > max) 
-           angular_z = -0.1f;
+           angular_z = -0.5f;
         else
            linear_x = 0.5f;
 
         drive_robot(linear_x, angular_z);
-        ros::Duration(3).sleep();
+        //ros::Duration(3).sleep();
     }
 
     /* CODE TO STEER TOWARDS WHITE PIXEL ASSUMED TO BE A BALL
