@@ -2,10 +2,15 @@
 #include "ball_chaser/DriveToTarget.h"
 #include <sensor_msgs/Image.h>
 // Image processing
-#include <opencv/cv.h> //TODO correct includes
-#include <highgui.h>
+#include <opencv2/imgproc/imgproc.hpp> //TODO correct includes
+#include <opencv2/highgui/highgui.hpp>
+#include <cv_bridge/cv_bridge.h>
 
+#define CV_BGR2GRAY 6
+#define CV_HOUGH_GRADIENT 3
 
+using namespace cv;
+using namespace cv_bridge;
 
 // Define a global client that can request services
 ros::ServiceClient client;
@@ -29,11 +34,12 @@ void process_image_callback(const sensor_msgs::Image img)
 {
     // Use image processing to locate circles (steer towards balls of any color)
     Mat gray;
-    cvtColor(img, gray, CV_BGR2GRAY);
+    CvImagePtr img_converted = toCvCopy(img);
+    cvtColor(img_converted->image, gray, CV_BGR2GRAY);
     // Smooth to avoid false detection
     GaussianBlur(gray, gray, Size(9, 9), 2, 2);
     std::vector<Vec3f> circles;
-    HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 2, gray->rows/4, 200, 100);
+    HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 2, img.height/4, 200, 100);
 
     if(circles.size() == 0)
     {

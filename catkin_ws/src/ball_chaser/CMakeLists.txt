@@ -11,8 +11,9 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   roscpp
   std_msgs
-  OpenCV
 )
+find_package(OpenCV)
+find_package(cv_bridge)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -118,8 +119,8 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
-  ${OpenCV_INCLUDE_DIRS}
 )
+include_directories(${OpenCV_INCLUDE_DIRS})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -159,8 +160,9 @@ target_link_libraries(drive_bot
  )
 target_link_libraries(process_image
    ${catkin_LIBRARIES}
-   ${OpenCV_LIBRARIES}
  )
+target_link_libraries(process_image ${OpenCV_LIBRARIES})
+target_link_libraries(process_image ${cv_bridge_LIBRARIES})
 
 #############
 ## Install ##
