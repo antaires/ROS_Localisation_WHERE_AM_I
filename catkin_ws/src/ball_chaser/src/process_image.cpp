@@ -1,6 +1,11 @@
 #include "ros/ros.h"
 #include "ball_chaser/DriveToTarget.h"
 #include <sensor_msgs/Image.h>
+// Image processing
+#include <opencv/cv.h> //TODO correct includes
+#include <highgui.h>
+
+
 
 // Define a global client that can request services
 ros::ServiceClient client;
@@ -22,8 +27,41 @@ void drive_robot(float lin_x, float ang_z)
 // This callback function continuously executes and reads the image data
 void process_image_callback(const sensor_msgs::Image img)
 {
-    const int white_pixel = 255;
+    // Use image processing to locate circles (steer towards balls of any color)
+    Mat gray;
+    cvtColor(img, gray, CV_BGR2GRAY);
+    // Smooth to avoid false detection
+    GaussianBlur(gray, gray, Size(9, 9), 2, 2);
+    std::vector<Vec3f> circles;
+    HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 2, gray->rows/4, 200, 100);
 
+    if(circles.size() == 0)
+    {
+        drive_robot(0.0f, 0.0f); 
+    }
+    else
+    {
+        //take first circle 
+        const float y = circles[0][1];
+
+        float linear_x = 0.0f;
+        float angular_z = 0.0f;
+        const int min = (img.step+1) / 4;
+        const int max = img.step - min; 
+
+        if(y < min)
+           angular_z = 0.1f;
+        else if (y > max) 
+           angular_z = -0.1f;
+        else
+           linear_x = 0.5f;
+
+        drive_robot(linear_x, angular_z);
+        ros::Duration(3).sleep();
+    }
+
+    /* CODE TO STEER TOWARDS WHITE PIXEL ASSUMED TO BE A BALL
+    const int white_pixel = 255;
     // Loop through each pixel in the image and check if there's a bright white one
     // Then, identify if this pixel falls in the left, mid, or right side of the image
     // Depending on the white ball position, call the drive_bot function and pass velocities to it
@@ -49,10 +87,10 @@ void process_image_callback(const sensor_msgs::Image img)
             return;
         }
     }
-
     //stops robot if no white visible
     drive_robot(linear_x, angular_z); 
     ros::Duration(3).sleep();
+    */
 }
 
 int main(int argc, char** argv)
