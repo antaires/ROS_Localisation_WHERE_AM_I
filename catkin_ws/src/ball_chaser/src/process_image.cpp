@@ -2,11 +2,11 @@
 #include "ball_chaser/DriveToTarget.h"
 #include <sensor_msgs/Image.h>
 // Image processing
-#include <opencv2/imgproc/imgproc.hpp> //TODO correct includes
+#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 // Debugging
-#include <ros/console.h>
+// #include <ros/console.h>
 
 #define CV_BGR2GRAY 6
 #define CV_HOUGH_GRADIENT 3
@@ -61,10 +61,6 @@ void process_image_callback(const sensor_msgs::Image img)
         float angular_z = 0.0f;
         const int min = gray.cols / 3;
         const int max = gray.cols - min;
-
-        ROS_INFO("min: %i", min);
-        ROS_INFO("max: %i", max);
-        ROS_INFO("x  : %f", x);
 
         if(x < min)
            angular_z = 0.1f;
