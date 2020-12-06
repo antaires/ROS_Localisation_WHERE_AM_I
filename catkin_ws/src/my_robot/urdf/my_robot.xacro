@@ -213,17 +213,5 @@
     <material>Gazebo/Blue</material>
 </gazebo>
 
-<gazebo reference="left_wheel">
-    <material>Gazebo/Yellow</material>
-</gazebo>
-
-<gazebo reference="right_wheel">
-    <material>Gazebo/Yellow</material>
-</gazebo>
-
-<gazebo reference="camera">
-    <material>Gazebo/Orange</material>
-</gazebo>
-
 </robot>
 

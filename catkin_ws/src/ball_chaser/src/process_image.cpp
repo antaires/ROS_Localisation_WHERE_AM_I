@@ -36,9 +36,6 @@ void process_image_callback(const sensor_msgs::Image img)
     {
         if(img.data[i] == white_pixel)
         {
-		ROS_INFO_STREAM("WHITE PIXEL FOUND - " + std::to_string(i));
-		ROS_INFO_STREAM("MIN - " + std::to_string(min));
-		ROS_INFO_STREAM("Max - " + std::to_string(max));
             const int y = i % img.step;
             if(y < min)
                angular_z = 0.1f;
