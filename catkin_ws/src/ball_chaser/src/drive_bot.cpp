@@ -25,7 +25,8 @@ bool handle_drive_request(ball_chaser::DriveToTarget::Request& req, ball_chaser:
     res.msg_feedback = "Motor command set - lx:" + std::to_string(motor_command.linear.x) + " , az:" + std::to_string(motor_command.angular.z);
     ROS_INFO_STREAM(res.msg_feedback);
 
-    //ros::Duration(1).sleep();
+    //pause to execute command
+    //ros::Duration(3).sleep();
 
     return true;
 }

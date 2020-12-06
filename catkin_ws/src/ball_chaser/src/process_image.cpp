@@ -30,25 +30,32 @@ void process_image_callback(const sensor_msgs::Image img)
     // Request a stop when there's no white ball seen by the camera
     float linear_x = 0.0f;
     float angular_z = 0.0f;
-    const int min = (img.step+1) / 3;
-    const int max = img.width - min;  
+    const int min = (img.step+1) / 4;
+    const int max = img.step - min;  
     for(int i = 0; i < img.height * img.step; ++i)
     {
         if(img.data[i] == white_pixel)
         {
+		ROS_INFO_STREAM("WHITE PIXEL FOUND - " + std::to_string(i));
+		ROS_INFO_STREAM("MIN - " + std::to_string(min));
+		ROS_INFO_STREAM("Max - " + std::to_string(max));
             const int y = i % img.step;
             if(y < min)
-               angular_z = 0.5f;
+               angular_z = 0.1f;
             else if (y > max) 
-               angular_z = -0.5f;
+               angular_z = -0.1f;
             else
                linear_x = 0.5f;
-            break;
+	
+            drive_robot(linear_x, angular_z);
+            ros::Duration(3).sleep();
+            return;
         }
     }
 
-    //request movement - stops robot if no white visible
+    //stops robot if no white visible
     drive_robot(linear_x, angular_z); 
+    ros::Duration(3).sleep();
 }
 
 int main(int argc, char** argv)
