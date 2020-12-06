@@ -39,9 +39,14 @@ void process_image_callback(const sensor_msgs::Image img)
     CvImagePtr img_converted = toCvCopy(img);
     cvtColor(img_converted->image, gray, CV_BGR2GRAY);
     // Smooth to avoid false detection
-    GaussianBlur(gray, gray, Size(9, 9), 2, 2);
+    //GaussianBlur(gray, gray, Size(9, 9), 0, 0);
     std::vector<Vec3f> circles;
-    HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 2, gray.rows/4, 200, 100);
+    const float min_dist = gray.rows/4;
+    const int upper_threshold = 200;
+    const int acc_threshold = 20;
+    const float min_radius = 5;
+    const float max_radius = 200;
+    HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 1, min_dist, upper_threshold, acc_threshold, min_radius, max_radius);
 
     if(circles.size() == 0)
     {
@@ -50,7 +55,7 @@ void process_image_callback(const sensor_msgs::Image img)
     else
     {
         //take first circle 
-        const float y = circles[0][1];
+        const float x = circles[0][0];
 
         float linear_x = 0.0f;
         float angular_z = 0.0f;
@@ -59,17 +64,17 @@ void process_image_callback(const sensor_msgs::Image img)
 
         ROS_INFO("min: %i", min);
         ROS_INFO("max: %i", max);
-        ROS_INFO("y  : %f", y);
+        ROS_INFO("x  : %f", x);
 
-        if(y < min)
-           angular_z = 0.5f;
-        else if (y > max) 
-           angular_z = -0.5f;
+        if(x < min)
+           angular_z = 0.1f;
+        else if (x > max) 
+           angular_z = -0.1f;
         else
            linear_x = 0.5f;
 
         drive_robot(linear_x, angular_z);
-        //ros::Duration(3).sleep();
+        ros::Duration(2).sleep();
     }
 
     /* CODE TO STEER TOWARDS WHITE PIXEL ASSUMED TO BE A BALL
@@ -86,10 +91,10 @@ void process_image_callback(const sensor_msgs::Image img)
     {
         if(img.data[i] == white_pixel)
         {
-            const int y = i % img.step;
-            if(y < min)
+            const int x = i % img.step;
+            if(x < min)
                angular_z = 0.1f;
-            else if (y > max) 
+            else if (x > max) 
                angular_z = -0.1f;
             else
                linear_x = 0.5f;
