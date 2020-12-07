@@ -70,7 +70,6 @@ void process_image_callback(const sensor_msgs::Image img)
            linear_x = 0.5f;
 
         drive_robot(linear_x, angular_z);
-        ros::Duration(2).sleep();
     }
 
     /* CODE TO STEER TOWARDS WHITE PIXEL ASSUMED TO BE A BALL
