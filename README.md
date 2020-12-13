@@ -2,7 +2,7 @@
 
 ## About
 
-A robotics project using ROS, Gazebo, C++ and Monte Carlo Localization to determine a robot's location inside a simulated world. 
+A robotics project using ROS, Gazebo, C++ and Monte Carlo Localization to determine a robot's location inside a simulated world. The particles are visualized on a 2D map of the 3D simulated world. 
 
 ## Tools
 * ROS
@@ -13,9 +13,21 @@ A robotics project using ROS, Gazebo, C++ and Monte Carlo Localization to determ
 Clone and navigate to the catkin directory
 
 ````
+$ cd catkin
 $ catkin_make
 $ source devel/setup.bash
 $ roslaunch my_robot world.launch
+
+(in a new terminal)
+$ cd catkin
+$ source devel/setup.bash
+$ roslaunch my_robot amcl.launch
+
+(option: control robot with keyboard)
+(in a new terminal)
+$ cd catkin
+$ source devel/setup.bash
+$ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 
 ````
 
