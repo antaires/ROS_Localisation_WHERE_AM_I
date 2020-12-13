@@ -17,7 +17,13 @@
   <param name="initial_pose_y" value="0"/>
 
   <!-- remove warning and protect against changes of costmap resolution --> 
-  <param name="meter_scoring" value="true">
+  <param name="meter_scoring" value="true"/>
+
+  <!-- set additional params -->
+  <param name="use_map_topic" value="true"/>
+  <param name="laser_model_type" value="likelihood_field"/>
+  <param name="odom_model_type" value="diff-corrected"/>  
+
 </node>
   
 <!-- Move Base -->
