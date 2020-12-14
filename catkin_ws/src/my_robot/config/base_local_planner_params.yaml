@@ -16,8 +16,8 @@ TrajectoryPlannerROS:
   vx_samples: 5.0
   vtheta_samples: 10.0
 
-  pdist_scale: 0.6 #0.6
-  gdist_scale: 0.8 #0.8
-  occdist_scale: 0.02
+  pdist_scale: 0.1 #0.6 low priority to global planner
+  gdist_scale: 1 #0.8 high priority to local planner
+  occdist_scale: 0.0 #0.02 how far robot can travel very closely to obstacle
 
   holonomic_robot: false
